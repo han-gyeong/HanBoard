@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div th:insert="fragments/menuHeader :: header"></div>
+<div id="register-form">
+    <!--  <div id="login-title">  </div>-->
+    <form method="post" style="width: 40%; margin-left: auto; margin-right: auto; text-align: left; margin-top: 15px;">
+        <div class="mb-3">
+            <label class="form-label" for="username">아이디</label>
+            <input class="form-control" id="username" name="username" type="text">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="password">비밀번호</label>
+            <input class="form-control" id="password" name="password" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">회원가입</button>
+    </form>
+</div>
+</body>
+</html>
