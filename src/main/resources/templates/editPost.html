@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>HANBOARD</title>
+</head>
+<body>
+<div th:insert="fragments/menuHeader :: header"></div>
+<div style="display: block; align-content: center">
+    <form method="post" style="width: 60%; margin-left: auto; margin-right: auto; text-align: left; margin-top: 15px;"
+          th:object="${post}">
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input class="form-control" id="title" name="title" placeholder="제목을 입력해주세요." th:value="*{title}"
+                   type="text">
+        </div>
+        <div class="form-group" style="margin-top: 15px">
+            <label for="content">내용</label>
+            <textarea class="form-control" id="content" name="content" rows="15" th:text="*{content}"></textarea>
+        </div>
+
+        <button class="btn btn-primary" style="margin-top: 15px" type="submit">게시하기</button>
+    </form>
+</div>
+</body>
+</html>
