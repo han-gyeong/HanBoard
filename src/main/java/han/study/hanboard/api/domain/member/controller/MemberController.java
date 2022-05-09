@@ -46,12 +46,6 @@ public class MemberController {
         return "login";
     }
 
-    @ResponseBody
-    @GetMapping("/login-check")
-    public String loginCheck() {
-        return "현재 로그인중인 유저 : " + getLoginUser();
-    }
-
     @PostMapping(value = "/login")
     public String login(MemberDto memberDto) {
         boolean loginResult = memberService.login(memberDto);
@@ -78,13 +72,5 @@ public class MemberController {
         } catch (ClassCastException e) {
         }
         return false;
-    }
-
-    private String getLoginUser() {
-        if (!isLogin()) {
-            return "";
-        }
-
-        return (String) request.getSession().getAttribute("username");
     }
 }
