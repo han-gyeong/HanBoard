@@ -42,6 +42,17 @@
         </tr>
         </tbody>
     </table>
+
+    <hr>
+    <div style="height: auto; margin-left: auto; margin-right: auto; display: flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="commentForm" style="margin-right: 2px">댓글 작성하기 : </label>
+        <form id="commentForm" method="post" style="width: auto; display: flex;"
+              th:action="@{/post/{id}/comment(id=${post.id})}">
+            <input class="form-control" id="content" name="content" placeholder="댓글을 입력해주세요." style="width: 500px"
+                   type="text">
+            <button class="btn btn-primary" style="margin-left: 3px" th:text="작성하기" type="submit"></button>
+        </form>
+    </div>
 </div>
 </body>
 </html>
