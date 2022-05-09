@@ -18,10 +18,8 @@ public class PostService {
     private final MemberRepository memberRepository;
 
     public Long createPost(Post post, String username) {
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-            throw new IllegalArgumentException("게시물을 작성하는 회원을 조회할 수 없습니다.");
-        }
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("게시물을 작성하는 회원을 조회할 수 없습니다."));
 
         post.setMember(member);
         Post savedPost = postRepository.save(post);
