@@ -15,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -91,12 +90,12 @@ public class PostController {
     }
 
     @PostMapping("/new")
-    public String createPost(@Valid @ModelAttribute PostDto postDto, BindingResult bindingResult, HttpServletRequest request) {
+    public String createPost(@Valid @ModelAttribute PostDto postDto, BindingResult bindingResult,
+                             @SessionAttribute(name = "username", required = false) String username) {
         if (bindingResult.hasErrors()) {
             return "post";
         }
 
-        String username = (String) request.getSession().getAttribute("username");
         Long generatedPostId = postService.createPost(postDto.toEntity(), username);
         return "redirect:/post/" + generatedPostId;
     }
