@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,11 +34,13 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    public String getPosts(Model model) {
-        List<Post> postList = postRepository.findAll();
+    public String getPosts(@PageableDefault Pageable pageable, Model model) {
+        Page<Post> postList = postRepository.findAll(pageable);
         List<PostDtoForList> dtoList = postList.stream().map(PostDtoForList::new).collect(Collectors.toList());
 
+        model.addAttribute("pages", postList.getTotalPages());
         model.addAttribute("postList", dtoList);
+
         return "postList";
     }
 

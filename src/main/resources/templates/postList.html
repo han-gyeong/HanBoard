@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>HANBOARD</title>
 </head>
@@ -29,6 +29,13 @@
             <td th:text="${each.createdTime}"></td>
         </tr>
     </table>
+
+    <!--    게시물 페이지 번호 넣기-->
+    <div style="display: flex; justify-content: center">
+        <button class="btn btn-light" th:each="index : ${#numbers.sequence(0, pages - 1)}"
+                th:onclick="'location.href=\''+ @{/post(page = ${index})} + '\''" th:text="${index + 1}"
+                type="button"></button>
+    </div>
 </div>
 </body>
 </html>
