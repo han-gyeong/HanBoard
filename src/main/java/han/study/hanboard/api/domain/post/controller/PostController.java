@@ -15,11 +15,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,20 +49,35 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String getPostById(@PathVariable Long id, Model model) {
+    public String getPostById(@PathVariable Long id, Model model, @SessionAttribute(required = false) String username) {
         Optional<Post> postOptional = postRepository.findById(id);
         if (!postOptional.isPresent()) {
             return "post";
         }
 
         model.addAttribute("post", convertPostToOutput(postOptional.get()));
+
+        boolean isAuthor = postOptional.get().getMember().getUsername().equals(username);
+        model.addAttribute("isAuthor", isAuthor);
+
         return "post";
     }
 
     // 게시물 수정하기
     @GetMapping("/{id}/edit")
-    public String editPost(@PathVariable Long id, Model model) {
+    public String editPost(@PathVariable Long id, Model model,
+                           @SessionAttribute(name = "username", required = false) String username,
+                           RedirectAttributes redirectAttributes) {
         Post post = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        // 로그인되지 않았거나, 본인 게시물이 아닌데 수정을 시도할 경우
+        if (!StringUtils.hasText(username) || !post.getMember().getUsername().equals(username)) {
+            log.warn("GET /post/{}/edit 잘못된 접근 예외 발생 :  {}", id, LocalDateTime.now());
+
+            redirectAttributes.addFlashAttribute("message", "잘못된 접근입니다.");
+            return "redirect:/post/{id}";
+        }
+
         model.addAttribute("post", post);
         return "editPost";
     }

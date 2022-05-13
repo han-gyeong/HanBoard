@@ -7,10 +7,10 @@
 <div th:insert="fragments/menuHeader :: header"></div>
 <div style="position:absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%; " th:object="${post}">
     <div th:align="right">
-        <a style="text-decoration-line: none" th:href="@{/post/{id}/edit(id=${post.id})}">
+        <a style="text-decoration-line: none" th:href="@{/post/{id}/edit(id=${post.id})}" th:if="${isAuthor}">
             <button class="btn btn-primary" type="button">게시물 수정</button>
         </a>
-        <a th:href="@{/post/{id}/delete(id=${post.id})}">
+        <a th:href="@{/post/{id}/delete(id=${post.id})}" th:if="${isAuthor}">
             <button class="btn btn-danger" type="button">게시물 삭제</button>
         </a>
     </div>
@@ -22,7 +22,6 @@
             </tr>
         </table>
         </thead>
-
         <tbody>
         <hr>
         <p th:text="${post.content}">내용이 들어갈 부분입니다.</p>
