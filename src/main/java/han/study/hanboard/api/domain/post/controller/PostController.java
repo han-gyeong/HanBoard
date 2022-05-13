@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 @RequestMapping("/post")
 @RequiredArgsConstructor
@@ -51,17 +53,7 @@ public class PostController {
             return "post";
         }
 
-        Post post = postOptional.get();
-        List<CommentDto> commentDtoList = new ArrayList<>();
-        for (Comment comment : post.getComments()) {
-            commentDtoList.add(
-                    new CommentDto(comment.getId(), comment.getMember().getUsername(),
-                            comment.getContent(), comment.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분"))));
-        }
-
-        PostOutputDto postOutputDto = new PostOutputDto(post.getId(), post.getTitle(), post.getMember().getUsername(), post.getContent(), commentDtoList);
-        model.addAttribute("post", postOutputDto);
-
+        model.addAttribute("post", convertPostToOutput(postOptional.get()));
         return "post";
     }
 
@@ -70,14 +62,12 @@ public class PostController {
     public String editPost(@PathVariable Long id, Model model) {
         Post post = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         model.addAttribute("post", post);
-
         return "editPost";
     }
 
     @PostMapping("/{id}/edit")
     public String submitEditPost(@PathVariable Long id, @ModelAttribute PostDto postDto, RedirectAttributes redirectAttributes) {
         postService.editPost(id, postDto);
-
         redirectAttributes.addFlashAttribute("message", id + " 번 게시물이  정상적으로 수정되었습니다.");
         return "redirect:/post/" + id;
     }
@@ -103,6 +93,17 @@ public class PostController {
 
         Long generatedPostId = postService.createPost(postDto.toEntity(), username);
         return "redirect:/post/" + generatedPostId;
+    }
+
+    private PostOutputDto convertPostToOutput(Post post) {
+        List<CommentDto> commentDtoList = new ArrayList<>();
+        for (Comment comment : post.getComments()) {
+            commentDtoList.add(
+                    new CommentDto(comment.getId(), comment.getMember().getUsername(),
+                            comment.getContent(), comment.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분"))));
+        }
+
+        return new PostOutputDto(post.getId(), post.getTitle(), post.getMember().getUsername(), post.getContent(), commentDtoList);
     }
 
     @Data
